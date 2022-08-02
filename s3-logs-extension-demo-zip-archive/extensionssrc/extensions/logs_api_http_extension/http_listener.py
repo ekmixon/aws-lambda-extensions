@@ -14,7 +14,11 @@ LOCAL_DEBUGGING_IP = "0.0.0.0"
 RECEIVER_PORT = 4243
 
 def get_listener_address():
-    return RECEIVER_NAME if ("true" != os.getenv("AWS_SAM_LOCAL")) else LOCAL_DEBUGGING_IP
+    return (
+        RECEIVER_NAME
+        if os.getenv("AWS_SAM_LOCAL") != "true"
+        else LOCAL_DEBUGGING_IP
+    )
 
 def http_server_init(queue):
     def handler(*args):
@@ -41,11 +45,7 @@ class LogsHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
-            cl = self.headers.get("Content-Length")
-            if cl:
-                data_len = int(cl)
-            else:
-                data_len = 0
+            data_len = int(cl) if (cl := self.headers.get("Content-Length")) else 0
             content = self.rfile.read(data_len)
             self.send_response(200)
             self.end_headers()

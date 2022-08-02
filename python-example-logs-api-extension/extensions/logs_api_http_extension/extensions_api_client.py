@@ -35,8 +35,7 @@ class ExtensionsAPIClient():
                 print(f"/register request to ExtensionsAPIClient failed. Status:  {resp.status}, Response: {resp.read()}")
                 # Fail the extension
                 sys.exit(1)
-            agent_identifier = resp.headers.get(LAMBDA_AGENT_IDENTIFIER_HEADER_KEY)
-            return agent_identifier
+            return resp.headers.get(LAMBDA_AGENT_IDENTIFIER_HEADER_KEY)
         except Exception as e:
             raise Exception(f"Failed to register to ExtensionsAPIClient: on {self.runtime_api_base_url}/register \
                 with agent_unique_name:{agent_unique_name}  \
